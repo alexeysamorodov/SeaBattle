@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SeaBattle.Data
+﻿namespace SeaBattle.Data
 {
     public class Matrix
     {
