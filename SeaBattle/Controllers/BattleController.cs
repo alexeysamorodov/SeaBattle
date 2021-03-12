@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SeaBattle.Data;
+using SeaBattle.Models;
 
 namespace SeaBattle.Controllers
 {
@@ -9,23 +9,21 @@ namespace SeaBattle.Controllers
     {
         [Route("create-matrix")]
         [HttpPost]
-        public void CreateMatrix()
+        public void CreateMatrix(MatrixModel matrixModel)
         {
-
         }
 
         [Route("ship")]
         [HttpPost]
-        public void CreateShip()
+        public void CreateShip(ShipModel shipModel)
         {
-
         }
 
         [Route("shot")]
         [HttpPost]
-        public void TakeShot()
+        public ShotResult TakeShot(ShotModel shotModel)
         {
-
+            return new ShotResult();
         }
 
         [Route("clear")]
