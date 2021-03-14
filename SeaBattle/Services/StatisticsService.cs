@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SeaBattle.Models;
+﻿using SeaBattle.Models;
 
 namespace SeaBattle.Services
 {
@@ -11,7 +7,18 @@ namespace SeaBattle.Services
         BattleStatistics GetBattleStatistics();
     }
 
-    public class StatisticsService
+    public class StatisticsService : IStatisticsService
     {
+        public BattleStatistics BattleStatistics { get; set; }
+
+        public StatisticsService()
+        {
+            BattleStatistics = new BattleStatistics();
+        }
+
+        public BattleStatistics GetBattleStatistics()
+        {
+            return new BattleStatistics();
+        }
     }
 }
