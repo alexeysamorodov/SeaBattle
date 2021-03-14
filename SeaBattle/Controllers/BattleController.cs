@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SeaBattle.Data;
+using SeaBattle.Filters;
 using SeaBattle.Helpers;
 using SeaBattle.Models;
 using SeaBattle.Services;
@@ -16,16 +17,13 @@ namespace SeaBattle.Controllers
         private readonly ICreationService _creationService;
         private readonly ICoordinatesParser _coordinatesParser;
         private readonly IGameLifetimeService _gameLifetimeService;
-        private readonly Game _game;
 
-        public BattleController(Game game,
-                                IStatisticsService statisticsService,
+        public BattleController(IStatisticsService statisticsService,
                                 IBattleService battleService,
                                 ICreationService creationService,
                                 ICoordinatesParser coordinatesParser,
                                 IGameLifetimeService gameLifetimeService)
         {
-            _game = game;
             _statisticsService = statisticsService;
             _battleService = battleService;
             _creationService = creationService;
@@ -35,10 +33,9 @@ namespace SeaBattle.Controllers
 
         [Route("create-matrix")]
         [HttpPost]
+        [TypeFilter(typeof(CheckGameStateFilter), Arguments = new object[] { GameState.NotStarted })]
         public ActionResult CreateMatrix(MatrixSize matrixSize)
         {
-            if (!_gameLifetimeService.CheckRequiredStateWithGameState(GameState.NotStarted))
-                return BadRequest($"Not allowed in current game state: {_game.State}. Required state: {GameState.NotStarted}");
             if (matrixSize == null || matrixSize.Range <= 0)
                 return BadRequest();
             _creationService.CreateMatrix(matrixSize.Range);
@@ -48,11 +45,9 @@ namespace SeaBattle.Controllers
 
         [Route("ship")]
         [HttpPost]
+        [TypeFilter(typeof(CheckGameStateFilter), Arguments = new object[] { GameState.MatrixCreated })]
         public ActionResult CreateShips(ShipModel shipModel)
         {
-            if (!_gameLifetimeService.CheckRequiredStateWithGameState(GameState.MatrixCreated))
-                return BadRequest($"Not allowed in current game state: {_game.State}. Required state: {GameState.MatrixCreated}");
-
             if (shipModel == null || string.IsNullOrEmpty(shipModel.Coordinates))
                 return BadRequest();
 
@@ -73,11 +68,9 @@ namespace SeaBattle.Controllers
 
         [Route("shot")]
         [HttpPost]
+        [TypeFilter(typeof(CheckGameStateFilter), Arguments = new object[] { GameState.ShipsCreated })]
         public ActionResult<ShotResult> TakeShot(ShotModel shotModel)
         {
-            if (!_gameLifetimeService.CheckRequiredStateWithGameState(GameState.ShipsCreated))
-                return BadRequest($"Not allowed in current game state: {_game.State}. Required state: {GameState.ShipsCreated}");
-
             if (shotModel == null)
                 return BadRequest();
 
