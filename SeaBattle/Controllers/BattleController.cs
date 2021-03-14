@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using SeaBattle.Data;
+using SeaBattle.Helpers;
 using SeaBattle.Models;
+using SeaBattle.Services;
 
 namespace SeaBattle.Controllers
 {
@@ -7,23 +11,66 @@ namespace SeaBattle.Controllers
     [Route("api/[controller]")]
     public class BattleController : ControllerBase
     {
+        private readonly IStatisticsService _statisticsService;
+        private readonly IBattleService _battleService;
+        private readonly ICreationService _creationService;
+        private readonly ICoordinatesParser _coordinatesParser;
+        private readonly Game _game;
+
+        public BattleController(Game game,
+                                IStatisticsService statisticsService,
+                                IBattleService battleService,
+                                ICreationService creationService,
+                                ICoordinatesParser coordinatesParser)
+        {
+            _game = game;
+            _statisticsService = statisticsService;
+            _battleService = battleService;
+            _creationService = creationService;
+            _coordinatesParser = coordinatesParser;
+        }
+
         [Route("create-matrix")]
         [HttpPost]
-        public void CreateMatrix(MatrixModel matrixModel)
+        public ActionResult CreateMatrix(MatrixSize matrixSize)
         {
+            if (matrixSize == null || matrixSize.Range <= 0)
+                return BadRequest();
+
+            _creationService.CreateMatrix(matrixSize.Range);
+            return Ok();
         }
 
         [Route("ship")]
         [HttpPost]
-        public void CreateShip(ShipModel shipModel)
+        public ActionResult CreateShips(ShipModel shipModel)
         {
+            if (shipModel == null || string.IsNullOrEmpty(shipModel.Coordinates))
+                return BadRequest();
+
+            var shipsCoords = shipModel.Coordinates
+                                                       .Split(',')
+                                                       .Select(s => s.Trim());
+            foreach (var shipCoords in shipsCoords)
+            {
+                var beginEndCoords = shipCoords.Split();
+                var begin = _coordinatesParser.ParseCoords(beginEndCoords[0]);
+                var end = _coordinatesParser.ParseCoords(beginEndCoords[1]);
+                _creationService.CreateShip(begin, end);
+            }
+
+            return Ok();
         }
 
         [Route("shot")]
         [HttpPost]
-        public ShotResult TakeShot(ShotModel shotModel)
+        public ActionResult<ShotResult> TakeShot(ShotModel shotModel)
         {
-            return new ShotResult();
+            if (shotModel == null)
+                return BadRequest();
+
+            var coords = _coordinatesParser.ParseCoords(shotModel.Coordinates);
+            return _battleService.TakeShot(coords);
         }
 
         [Route("clear")]
@@ -37,7 +84,7 @@ namespace SeaBattle.Controllers
         [HttpGet]
         public BattleStatistics GetStatistics()
         {
-            return new BattleStatistics();
+            return _statisticsService.GetBattleStatistics();
         }
     }
 }
