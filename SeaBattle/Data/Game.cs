@@ -15,7 +15,7 @@ namespace SeaBattle.Data
 
         public void Clear()
         {
-            State = GameState.Beginning;
+            State = GameState.NotStarted;
             Matrix = null;
             Ships = new List<Ship>();
         }

@@ -4,16 +4,40 @@ namespace SeaBattle.Services
 {
     public interface IGameLifetimeService
     {
-        Game Game { get; set; }
+        bool CheckRequiredStateWithGameState(GameState requiredState);
 
-        void StartBattle();
+        void MoveNextState();
 
-        void FinishBattle();
+        void ClearGame();
 
-        bool IsOperationValidNow();
+        void FinishGame();
     }
 
-    public class GameLifetimeService
+    public class GameLifetimeService : IGameLifetimeService
     {
+        private readonly Game _game;
+
+        public GameLifetimeService(Game game)
+        {
+            _game = game;
+        }
+
+        public bool CheckRequiredStateWithGameState(GameState requiredState) => _game.State == requiredState;
+
+        public void MoveNextState()
+        {
+            if (_game.State < GameState.Finished)
+                _game.State++;
+        }
+
+        public void ClearGame()
+        {
+            _game.Clear();
+        }
+
+        public void FinishGame()
+        {
+            _game.State = GameState.Finished;
+        }
     }
 }

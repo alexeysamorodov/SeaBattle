@@ -2,8 +2,9 @@
 {
     public enum GameState
     {
-        Beginning = 0,
-        InProgress = 1,
-        Finished = 2
+        NotStarted = 0,
+        MatrixCreated = 1,
+        ShipsCreated = 2,
+        Finished = 3
     }
 }

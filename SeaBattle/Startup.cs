@@ -32,6 +32,7 @@ namespace SeaBattle
             services.AddTransient<ICoordinatesParser, CoordinatesParser>();
             services.AddTransient<IStatisticsService, StatisticsService>();
             services.AddTransient<IBattleService, BattleService>();
+            services.AddTransient<IGameLifetimeService, GameLifetimeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
