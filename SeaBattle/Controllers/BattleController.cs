@@ -33,19 +33,18 @@ namespace SeaBattle.Controllers
 
         [Route("create-matrix")]
         [HttpPost]
-        [TypeFilter(typeof(CheckGameStateFilter), Arguments = new object[] { GameState.NotStarted })]
+        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] { GameState.NotStarted })]
         public ActionResult CreateMatrix(MatrixSize matrixSize)
         {
             if (matrixSize == null || matrixSize.Range <= 0)
                 return BadRequest();
             _creationService.CreateMatrix(matrixSize.Range);
-            _gameLifetimeService.MoveNextState();
             return Ok();
         }
 
         [Route("ship")]
         [HttpPost]
-        [TypeFilter(typeof(CheckGameStateFilter), Arguments = new object[] { GameState.MatrixCreated })]
+        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] { GameState.MatrixCreated })]
         public ActionResult CreateShips(ShipModel shipModel)
         {
             if (shipModel == null || string.IsNullOrEmpty(shipModel.Coordinates))
@@ -62,13 +61,12 @@ namespace SeaBattle.Controllers
                 _creationService.CreateShip(begin, end);
             }
 
-            _gameLifetimeService.MoveNextState();
             return Ok();
         }
 
         [Route("shot")]
         [HttpPost]
-        [TypeFilter(typeof(CheckGameStateFilter), Arguments = new object[] { GameState.ShipsCreated })]
+        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] { GameState.ShipsCreated })]
         public ActionResult<ShotResult> TakeShot(ShotModel shotModel)
         {
             if (shotModel == null)
@@ -76,8 +74,6 @@ namespace SeaBattle.Controllers
 
             var coords = _coordinatesParser.ParseCoords(shotModel.Coordinates);
             _statisticsService.IncrementShotsCount();
-
-            _gameLifetimeService.MoveNextState();
             return _battleService.TakeShot(coords);
         }
 

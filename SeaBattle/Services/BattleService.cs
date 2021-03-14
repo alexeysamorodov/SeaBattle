@@ -3,11 +3,6 @@ using SeaBattle.Models;
 
 namespace SeaBattle.Services
 {
-    public interface IBattleService
-    {
-        ShotResult TakeShot(Coordinates shotCoords);
-    }
-
     public class BattleService: IBattleService
     {
         private readonly Game _game;
@@ -30,7 +25,7 @@ namespace SeaBattle.Services
                     shotResult.IsDestroyed = cell.Ship.IsDestroyed;
                 }
             }
-            shotResult.IsEndOfTheGame = _game.IsEndOfTheGame;
+            shotResult.IsEndOfTheGame = _game.AreAllShipsDestroyed;
             return shotResult;
         }
     }

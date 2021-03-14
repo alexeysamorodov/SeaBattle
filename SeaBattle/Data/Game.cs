@@ -11,7 +11,7 @@ namespace SeaBattle.Data
 
         public List<Ship> Ships { get; set; } = new List<Ship>();
 
-        public bool IsEndOfTheGame => Ships.Any() && Ships.All(s => s.IsDestroyed);
+        public bool AreAllShipsDestroyed => Ships.Any() && Ships.All(s => s.IsDestroyed);
 
         public void Clear()
         {
