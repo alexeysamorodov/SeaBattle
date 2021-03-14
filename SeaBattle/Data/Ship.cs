@@ -5,8 +5,14 @@ namespace SeaBattle.Data
 {
     public class Ship
     {
-        public HashSet<Cell> Cells { get; set; }
+        public List<Cell> Cells { get; set; } = new List<Cell>();
 
-        public bool IsAlive => Cells != null && Cells.Any(c => c.IsAlive);
+        public bool IsDestroyed => Cells != null && Cells.All(c => !c.IsAlive);
+
+        public void AddCell(Cell cell)
+        {
+            Cells.Add(cell);
+            cell.Ship = this;
+        }
     }
 }

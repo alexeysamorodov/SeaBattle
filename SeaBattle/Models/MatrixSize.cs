@@ -2,7 +2,7 @@
 
 namespace SeaBattle.Models
 {
-    public class MatrixModel
+    public class MatrixSize
     {
         [JsonPropertyName("range")]
         public int Range { get; set; }

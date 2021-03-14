@@ -1,11 +1,26 @@
-﻿namespace SeaBattle.Data
+﻿using SeaBattle.Services;
+
+namespace SeaBattle.Data
 {
     public class Matrix
     {
-        public int Size { get; set; }
+        public Cell[,] Battlefield { get; set; }
 
-        public Cell[,] Cells { get; set; }
+        public Matrix(int size)
+        {
+            Battlefield = new Cell[size,size];
+        }
 
-        public bool Shots { get; set; }
+        public Cell this[int x, int y]
+        {
+            get => Battlefield[x, y];
+            set => Battlefield[x, y] = value;
+        }
+
+        public Cell this[Coordinates coords]
+        {
+            get => this[coords.X, coords.Y];
+            set => this[coords.X, coords.Y] = value;
+        }
     }
 }
