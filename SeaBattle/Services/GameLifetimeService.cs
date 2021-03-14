@@ -4,7 +4,7 @@ namespace SeaBattle.Services
 {
     public interface IGameLifetimeService
     {
-        IGame Game { get; set; }
+        Game Game { get; set; }
 
         void StartBattle();
 
