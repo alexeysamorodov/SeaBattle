@@ -11,13 +11,13 @@ namespace SeaBattle.Data
 
         public List<Ship> Ships { get; set; } = new List<Ship>();
 
-        public bool IsEndOfTheGame => Ships.All(s => s.IsDestroyed);
-    }
+        public bool IsEndOfTheGame => Ships.Any() && Ships.All(s => s.IsDestroyed);
 
-    public enum GameState
-    {
-        Beginning = 0,
-        InProgress = 1,
-        Finished = 2
+        public void Clear()
+        {
+            State = GameState.Beginning;
+            Matrix = null;
+            Ships = new List<Ship>();
+        }
     }
 }

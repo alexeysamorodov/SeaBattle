@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SeaBattle.Data;
 using SeaBattle.Helpers;
+using SeaBattle.Models;
 using SeaBattle.Services;
 
 namespace SeaBattle
@@ -25,6 +26,7 @@ namespace SeaBattle
             services.AddSwaggerGen();
 
             services.AddSingleton<Game>();
+            services.AddSingleton<BattleStatistics>();
 
             services.AddTransient<ICreationService, CreationService>();
             services.AddTransient<ICoordinatesParser, CoordinatesParser>();

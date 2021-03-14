@@ -70,6 +70,7 @@ namespace SeaBattle.Controllers
                 return BadRequest();
 
             var coords = _coordinatesParser.ParseCoords(shotModel.Coordinates);
+            _statisticsService.IncrementShotsCount();
             return _battleService.TakeShot(coords);
         }
 
@@ -77,7 +78,8 @@ namespace SeaBattle.Controllers
         [HttpPost]
         public void ClearBattle()
         {
-
+            _game.Clear();
+            _statisticsService.ClearStatistics();
         }
 
         [Route("state")]
