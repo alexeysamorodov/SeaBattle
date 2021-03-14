@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using SeaBattle.Services;
 
 namespace SeaBattle.Helpers
 {
-    interface ICoordinatesParser
+    public interface ICoordinatesParser
     {
+        Coordinates ParseCoords(string strCoords);
     }
 
-    public class CoordinatesParser
+    public class CoordinatesParser: ICoordinatesParser
     {
+        public Coordinates ParseCoords(string strCoords)
+        {
+            return new Coordinates
+            {
+                Y = strCoords[^1] - 'A',
+                X = int.Parse(strCoords.Substring(0, strCoords.Length - 1)) - 1
+            };
+        }
     }
 }
