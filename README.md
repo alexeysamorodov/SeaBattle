@@ -28,7 +28,6 @@ request: {"сoord": string}
 	"knock":bool,
 	"end":bool
 }
-
 В случае повторного выстрела по тем же координатам - возвращает 400 с сообщением об ошибке.
 В случае попадания и незатопления корабля - {"destroy":false,"knock":true,"end":false}, при потоплении {"destroy":true,"knock":true,"end":false},
 Если утоплен последний корабль - {"destroy":true,"knock":true,"end":true}
