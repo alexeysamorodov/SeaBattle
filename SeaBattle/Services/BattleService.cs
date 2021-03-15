@@ -28,5 +28,11 @@ namespace SeaBattle.Services
             shotResult.IsEndOfTheGame = _game.AreAllShipsDestroyed;
             return shotResult;
         }
+
+        public bool CheckCellShot(Coordinates shotCoords)
+        {
+            var cell = _game.Matrix[shotCoords];
+            return cell != null && !cell.IsAlive;
+        }
     }
 }

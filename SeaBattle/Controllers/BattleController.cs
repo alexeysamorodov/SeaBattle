@@ -84,6 +84,8 @@ namespace SeaBattle.Controllers
                 return BadRequest(e.ToString());
             }
             _statisticsService.IncrementShotsCount();
+            if (_battleService.CheckCellShot(coords))
+                return BadRequest($"Shot at coordinates: {coords.StringRepresentation} was taken earlier.");
             return _battleService.TakeShot(coords);
         }
 
