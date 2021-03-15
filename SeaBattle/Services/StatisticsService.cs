@@ -4,13 +4,6 @@ using SeaBattle.Models;
 
 namespace SeaBattle.Services
 {
-    public interface IStatisticsService
-    {
-        BattleStatistics GetBattleStatistics();
-        void IncrementShotsCount();
-        void ClearStatistics();
-    }
-
     public class StatisticsService : IStatisticsService
     {
         private readonly BattleStatistics _battleStatistics;
