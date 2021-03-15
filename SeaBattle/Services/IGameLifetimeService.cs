@@ -6,8 +6,6 @@ namespace SeaBattle.Services
     {
         GameState GetGameState();
 
-        bool CheckRequiredStateWithGameState(GameState requiredState);
-
         void MoveNextState();
 
         void ClearGame();

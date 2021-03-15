@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SeaBattle.Data;
@@ -9,24 +10,25 @@ namespace SeaBattle.Filters
     public class ManageGameStateFilter : IActionFilter
     {
         private readonly IGameLifetimeService _gameLifetimeService;
-        private readonly GameState _requiredState;
+        private readonly GameState[] _allowedStates;
         private readonly Game _game;
 
         public ManageGameStateFilter(IGameLifetimeService gameLifetimeService,
-                                     GameState requiredState,
+                                     GameState[] allowedStates,
                                      Game game)
         {
             _gameLifetimeService = gameLifetimeService;
-            _requiredState = requiredState;
+            _allowedStates = allowedStates;
             _game = game;
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!_gameLifetimeService.CheckRequiredStateWithGameState(_requiredState))
+            var gameState = _gameLifetimeService.GetGameState();
+            if (!_allowedStates.Contains(gameState))
             {
                 context.Result = new BadRequestObjectResult(
-                    $"Not allowed in current game state: {_gameLifetimeService.GetGameState()}. Required state: {_requiredState}");
+                    $"Not allowed in current game state: {gameState}. Allowed states: {string.Join(',', _allowedStates)}");
             }
         }
 

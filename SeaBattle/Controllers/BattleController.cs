@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SeaBattle.Data;
 using SeaBattle.Exceptions;
 using SeaBattle.Filters;
@@ -37,18 +36,20 @@ namespace SeaBattle.Controllers
 
         [Route("create-matrix")]
         [HttpPost]
-        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] { GameState.NotStarted })]
+        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] { new[]{GameState.NotStarted, GameState.Finished}})]
         public ActionResult CreateMatrix(MatrixSize matrixSize)
         {
             if (matrixSize == null || matrixSize.Range <= 0 || matrixSize.Range > 26)
                 return BadRequest("Invalid matrix size. Required size: 0 < matrixSize <= 26");
+            if (_gameLifetimeService.GetGameState() == GameState.Finished)
+                _gameLifetimeService.ClearGame();
             _creationService.CreateMatrix(matrixSize.Range);
             return Ok();
         }
 
         [Route("ship")]
         [HttpPost]
-        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] { GameState.MatrixCreated })]
+        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] {new[] {GameState.MatrixCreated}})]
         public ActionResult CreateShips(ShipModel shipModel)
         {
             if (shipModel == null || string.IsNullOrEmpty(shipModel.Coordinates))
@@ -69,7 +70,7 @@ namespace SeaBattle.Controllers
 
         [Route("shot")]
         [HttpPost]
-        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] { GameState.ShipsCreated })]
+        [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] {new[] {GameState.ShipsCreated}})]
         public ActionResult<ShotResult> TakeShot(ShotModel shotModel)
         {
             if (shotModel == null)
@@ -83,9 +84,9 @@ namespace SeaBattle.Controllers
             {
                 return BadRequest(e.ToString());
             }
-            _statisticsService.IncrementShotsCount();
             if (_battleService.CheckCellShot(coords))
                 return BadRequest($"Shot at coordinates: {coords.StringRepresentation} was taken earlier.");
+            _statisticsService.IncrementShotsCount();
             return _battleService.TakeShot(coords);
         }
 
@@ -94,7 +95,6 @@ namespace SeaBattle.Controllers
         public void ClearBattle()
         {
             _gameLifetimeService.ClearGame();
-            _statisticsService.ClearStatistics();
         }
 
         [Route("state")]

@@ -5,13 +5,14 @@ namespace SeaBattle.Services
     public class GameLifetimeService : IGameLifetimeService
     {
         private readonly Game _game;
+        private readonly IStatisticsService _statisticsService;
 
-        public GameLifetimeService(Game game)
+        public GameLifetimeService(Game game,
+                                   IStatisticsService statisticsService)
         {
             _game = game;
+            _statisticsService = statisticsService;
         }
-
-        public bool CheckRequiredStateWithGameState(GameState requiredState) => _game.State == requiredState;
 
         public GameState GetGameState() => _game.State;
 
@@ -24,6 +25,7 @@ namespace SeaBattle.Services
         public void ClearGame()
         {
             _game.Clear();
+            _statisticsService.ClearStatistics();
         }
 
         public void FinishGame()
