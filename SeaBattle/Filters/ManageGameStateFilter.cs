@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SeaBattle.Data;
 using SeaBattle.Services;
@@ -31,13 +32,25 @@ namespace SeaBattle.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Result == null || !(context.Result is OkResult) && !(context.Result is OkObjectResult))
+            if (!IsStatusCodeSuccess(context))
                 return;
             var currentState = _gameLifetimeService.GetGameState();
             if (currentState < GameState.ShipsCreated)
                 _gameLifetimeService.MoveNextState();
             else if (currentState == GameState.ShipsCreated && _game.AreAllShipsDestroyed)
                 _gameLifetimeService.FinishGame();
+        }
+
+        private bool IsStatusCodeSuccess(ActionExecutedContext context)
+        {
+            var result = context.Result as ObjectResult;
+            var statusCode = result?.StatusCode;
+            if (statusCode == null)
+            {
+                var statusResult = context.Result as StatusCodeResult;
+                statusCode = statusResult?.StatusCode;
+            }
+            return !statusCode.HasValue || statusCode.Value == StatusCodes.Status200OK;
         }
     }
 }
