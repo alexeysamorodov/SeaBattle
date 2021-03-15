@@ -31,7 +31,7 @@ namespace SeaBattle.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.HttpContext.Response.StatusCode != 200)
+            if (context.Result == null || !(context.Result is OkResult) && !(context.Result is OkObjectResult))
                 return;
             var currentState = _gameLifetimeService.GetGameState();
             if (currentState < GameState.ShipsCreated)
