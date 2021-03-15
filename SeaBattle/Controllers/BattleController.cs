@@ -78,7 +78,7 @@ namespace SeaBattle.Controllers
             Coordinates coords;
             try
             {
-                coords = _coordinatesParser.ParseCoords(shotModel.Coordinates, _game.Matrix.Size);
+                coords = _coordinatesParser.ParseCellCoords(shotModel.Coordinates, _game.Matrix.Size);
             }
             catch (BadCoordinatesException e)
             {
