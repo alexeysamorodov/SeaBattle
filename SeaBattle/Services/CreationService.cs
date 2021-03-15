@@ -1,5 +1,4 @@
-﻿using System;
-using SeaBattle.Data;
+﻿using SeaBattle.Data;
 using SeaBattle.Exceptions;
 using SeaBattle.Helpers;
 
