@@ -1,4 +1,5 @@
-﻿using SeaBattle.Models;
+﻿using SeaBattle.Data;
+using SeaBattle.Models;
 
 namespace SeaBattle.Services
 {

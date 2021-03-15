@@ -1,9 +1,11 @@
-﻿namespace SeaBattle.Services
+﻿using SeaBattle.Data;
+
+namespace SeaBattle.Services
 {
     public interface ICreationService
     {
         void CreateMatrix(int size);
 
-        void CreateShip(Coordinates start, Coordinates end);
+        void CreateShips(ShipCoordinates[] shipsCoords);
     }
 }
