@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using SeaBattle.Data;
+using SeaBattle.Exceptions;
 using SeaBattle.Filters;
 using SeaBattle.Helpers;
 using SeaBattle.Models;
@@ -17,18 +18,21 @@ namespace SeaBattle.Controllers
         private readonly ICreationService _creationService;
         private readonly ICoordinatesParser _coordinatesParser;
         private readonly IGameLifetimeService _gameLifetimeService;
+        private readonly Game _game;
 
         public BattleController(IStatisticsService statisticsService,
                                 IBattleService battleService,
                                 ICreationService creationService,
                                 ICoordinatesParser coordinatesParser,
-                                IGameLifetimeService gameLifetimeService)
+                                IGameLifetimeService gameLifetimeService,
+                                Game game)
         {
             _statisticsService = statisticsService;
             _battleService = battleService;
             _creationService = creationService;
             _coordinatesParser = coordinatesParser;
             _gameLifetimeService = gameLifetimeService;
+            _game = game;
         }
 
         [Route("create-matrix")]
@@ -36,8 +40,8 @@ namespace SeaBattle.Controllers
         [TypeFilter(typeof(ManageGameStateFilter), Arguments = new object[] { GameState.NotStarted })]
         public ActionResult CreateMatrix(MatrixSize matrixSize)
         {
-            if (matrixSize == null || matrixSize.Range <= 0)
-                return BadRequest();
+            if (matrixSize == null || matrixSize.Range <= 0 || matrixSize.Range > 26)
+                return BadRequest("Invalid matrix size. Required size: 0 < matrixSize <= 26");
             _creationService.CreateMatrix(matrixSize.Range);
             return Ok();
         }
@@ -49,18 +53,17 @@ namespace SeaBattle.Controllers
         {
             if (shipModel == null || string.IsNullOrEmpty(shipModel.Coordinates))
                 return BadRequest();
-
-            var shipsCoords = shipModel.Coordinates
-                                                       .Split(',')
-                                                       .Select(s => s.Trim());
-            foreach (var shipCoords in shipsCoords)
+            try
             {
-                var beginEndCoords = shipCoords.Split();
-                var begin = _coordinatesParser.ParseCoords(beginEndCoords[0]);
-                var end = _coordinatesParser.ParseCoords(beginEndCoords[1]);
-                _creationService.CreateShip(begin, end);
+                var shipsCoords = _coordinatesParser.ParseShipsCoordinates(shipModel.Coordinates,
+                                                                                         _game.Matrix.Size);
+                _creationService.CreateShips(shipsCoords);
             }
-
+            catch (BadCoordinatesException e)
+            {
+                _game.ResetMatrixWithShips();
+                return BadRequest(e.ToString());
+            }
             return Ok();
         }
 
@@ -71,8 +74,15 @@ namespace SeaBattle.Controllers
         {
             if (shotModel == null)
                 return BadRequest();
-
-            var coords = _coordinatesParser.ParseCoords(shotModel.Coordinates);
+            Coordinates coords;
+            try
+            {
+                coords = _coordinatesParser.ParseCoords(shotModel.Coordinates, _game.Matrix.Size);
+            }
+            catch (BadCoordinatesException e)
+            {
+                return BadRequest(e.ToString());
+            }
             _statisticsService.IncrementShotsCount();
             return _battleService.TakeShot(coords);
         }
