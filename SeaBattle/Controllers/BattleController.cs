@@ -84,7 +84,7 @@ namespace SeaBattle.Controllers
             {
                 return BadRequest(e.ToString());
             }
-            if (_battleService.CheckCellShot(coords))
+            if (_battleService.CheckCellIsAlive(coords))
                 return BadRequest($"Shot at coordinates: {coords.StringRepresentation} was taken earlier.");
             _statisticsService.IncrementShotsCount();
             return _battleService.TakeShot(coords);

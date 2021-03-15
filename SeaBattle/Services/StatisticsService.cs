@@ -31,7 +31,6 @@ namespace SeaBattle.Services
 
         public void ClearStatistics()
         {
-            //TODO: refactor clear BattleStatistics
             _battleStatistics.ShipCount = _battleStatistics.DestroyedCount =
                 _battleStatistics.KnockedCount = _battleStatistics.ShotCount = 0;
         }

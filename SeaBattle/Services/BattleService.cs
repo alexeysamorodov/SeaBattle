@@ -29,7 +29,7 @@ namespace SeaBattle.Services
             return shotResult;
         }
 
-        public bool CheckCellShot(Coordinates shotCoords)
+        public bool CheckCellIsAlive(Coordinates shotCoords)
         {
             var cell = _game.Matrix[shotCoords];
             return cell != null && !cell.IsAlive;

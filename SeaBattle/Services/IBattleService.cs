@@ -7,6 +7,6 @@ namespace SeaBattle.Services
     {
         ShotResult TakeShot(Coordinates shotCoords);
 
-        bool CheckCellShot(Coordinates shotCoords);
+        bool CheckCellIsAlive(Coordinates shotCoords);
     }
 }
