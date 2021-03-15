@@ -28,11 +28,12 @@ namespace SeaBattle
             services.AddSingleton<Game>();
             services.AddSingleton<BattleStatistics>();
 
-            services.AddTransient<ICreationService, CreationService>();
-            services.AddTransient<ICoordinatesParser, CoordinatesParser>();
-            services.AddTransient<IStatisticsService, StatisticsService>();
-            services.AddTransient<IBattleService, BattleService>();
-            services.AddTransient<IGameLifetimeService, GameLifetimeService>();
+            services.AddScoped<ICreationService, CreationService>();
+            services.AddScoped<ICoordinatesParser, CoordinatesParser>();
+            services.AddScoped<IStatisticsService, StatisticsService>();
+            services.AddScoped<IBattleService, BattleService>();
+            services.AddScoped<IGameLifetimeService, GameLifetimeService>();
+            services.AddScoped<INeighboringCellsMarker, NeighboringCellsMarker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
