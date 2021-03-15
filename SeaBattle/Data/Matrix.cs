@@ -1,13 +1,17 @@
-﻿using SeaBattle.Services;
+﻿using System;
 
 namespace SeaBattle.Data
 {
     public class Matrix
     {
+        private const int MaxSize = 26;
         public Cell[,] Battlefield { get; set; }
+        public int Size => Battlefield.GetLength(0);
 
         public Matrix(int size)
         {
+            if (size > MaxSize)
+                throw new Exception();
             Battlefield = new Cell[size,size];
         }
 

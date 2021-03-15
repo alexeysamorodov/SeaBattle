@@ -19,5 +19,11 @@ namespace SeaBattle.Data
             Matrix = null;
             Ships = new List<Ship>();
         }
+
+        public void ResetMatrixWithShips()
+        {
+            Matrix = new Matrix(Matrix.Size);
+            Ships = new List<Ship>();
+        }
     }
 }
